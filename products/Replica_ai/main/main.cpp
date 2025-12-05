@@ -12,6 +12,8 @@
 #endif
 #define ESP_UTILS_LOG_TAG "Main"
 
+#include "modules/audio_sys.h"
+
 constexpr bool EXAMPLE_SHOW_MEM_INFO = true;
 
 extern "C" void app_main()
@@ -27,7 +29,7 @@ extern "C" void app_main()
             while (1) {
                 esp_utils_mem_print_info();
 
-                // audio_sys_get_real_time_stats();
+                audio_sys_get_real_time_stats();
 
                 boost::this_thread::sleep_for(boost::chrono::seconds(5));
             } })
