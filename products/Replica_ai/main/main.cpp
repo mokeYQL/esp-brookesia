@@ -5,17 +5,32 @@
  */
 
 #include <stdio.h>
-
+#include "esp_lib_utils.h"
+#include "boost/thread.hpp"
 #ifdef ESP_UTILS_LOG_TAG
 #undef ESP_UTILS_LOG_TAG
 #endif
 #define ESP_UTILS_LOG_TAG "Main"
 
-constexpr bool EXAMPLE_SHOW_MEM_INFO = false;
+constexpr bool EXAMPLE_SHOW_MEM_INFO = true;
 
 extern "C" void app_main()
 {
-    printf("Hello world!\n");
-    printf("Hello world 2 !\n");
-    printf("Hello world 3 !\n");
+    if constexpr (EXAMPLE_SHOW_MEM_INFO)
+    {
+        esp_utils::thread_config_guard thread_config({
+            .name = "mem_info",
+            .stack_size = 4096,
+        });
+        boost::thread([=]()
+                      {
+            while (1) {
+                esp_utils_mem_print_info();
+
+                // audio_sys_get_real_time_stats();
+
+                boost::this_thread::sleep_for(boost::chrono::seconds(5));
+            } })
+            .detach();
+    }
 }
