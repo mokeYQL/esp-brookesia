@@ -1,2 +1,14 @@
-idf_component_register(SRCS "hello_world_main.c"
-                       INCLUDE_DIRS "")
+file(GLOB_RECURSE MAIN_SRCS ./*.cpp ./*.c)
+
+set(EMBEDDED_FILES "")
+
+if (CONFIG_EXAMPLE_COZE_AGENT_PRIVATE_KEY_FILE_PATH)
+    list(APPEND EMBEDDED_FILES ${CONFIG_EXAMPLE_COZE_AGENT_PRIVATE_KEY_FILE_PATH})
+    message(STATUS "Coze Private Key Path: ${CONFIG_EXAMPLE_COZE_AGENT_PRIVATE_KEY_FILE_PATH}")
+endif()
+
+idf_component_register(
+    SRCS ${MAIN_SRCS}
+    INCLUDE_DIRS "."
+    EMBED_TXTFILES ${EMBEDDED_FILES}
+)
