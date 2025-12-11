@@ -6,7 +6,9 @@
 
 #include <stdio.h>
 #include "esp_lib_utils.h"
+
 #include "boost/thread.hpp"
+
 #ifdef ESP_UTILS_LOG_TAG
 #undef ESP_UTILS_LOG_TAG
 #endif
@@ -14,13 +16,16 @@
 
 #include "modules/audio_sys.h"
 #include "modules/display.hpp"
-constexpr bool EXAMPLE_SHOW_MEM_INFO = true;
+#include "modules/system.hpp"
 
+constexpr bool EXAMPLE_SHOW_MEM_INFO = true;
 extern "C" void app_main()
 {
     auto default_dummy_draw = true;
+    ESP_UTILS_LOG_TRACE_GUARD();
     assert(display_init(default_dummy_draw) && "Initialize display failed");
 
+    assert(system_init() && "Initialize system failed");
     if constexpr (EXAMPLE_SHOW_MEM_INFO)
     {
         esp_utils::thread_config_guard thread_config({

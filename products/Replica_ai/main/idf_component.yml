@@ -21,3 +21,7 @@ dependencies:
     override_path: "../../../core/brookesia_core"  
   espressif/gmf_ai_audio:
     override_path: "../common_components/espressif__gmf_ai_audio"
+  bq27220:
+    override_path: "../common_components/bq27220"
+  brookesia_app_settings:
+    override_path: "../../../apps/brookesia_app_settings"
