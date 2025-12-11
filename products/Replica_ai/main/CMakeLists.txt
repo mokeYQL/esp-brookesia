@@ -63,3 +63,4 @@ if(CONFIG_LV_OS_FREERTOS)
 endif()
 
 target_compile_options(${COMPONENT_LIB} PUBLIC -Wno-missing-field-initializers)
+spiffs_create_partition_image(spiffs_data ../spiffs FLASH_IN_PROJECT)

@@ -16,6 +16,9 @@
 
 #include "modules/audio_sys.h"
 #include "modules/display.hpp"
+#include "modules/services.hpp"
+#include "modules/led_indicator.h"
+#include "modules/file_system.hpp"
 #include "modules/system.hpp"
 
 constexpr bool EXAMPLE_SHOW_MEM_INFO = true;
@@ -23,9 +26,15 @@ extern "C" void app_main()
 {
     auto default_dummy_draw = true;
     ESP_UTILS_LOG_TRACE_GUARD();
+    printf("Project version: %s\n", CONFIG_APP_PROJECT_VER);
+    assert(services_init() && "Initialize services failed");
     assert(display_init(default_dummy_draw) && "Initialize display failed");
-
-    assert(system_init() && "Initialize system failed");
+    assert(led_indicator_init() && "Initialize led indicator failed");
+    if (!file_system_init())
+    {
+        ESP_UTILS_LOGE("Initialize file system failed, related features will be disabled");
+    }
+    // assert(system_init() && "Initialize system failed");
     if constexpr (EXAMPLE_SHOW_MEM_INFO)
     {
         esp_utils::thread_config_guard thread_config({
