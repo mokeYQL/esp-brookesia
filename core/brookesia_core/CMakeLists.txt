@@ -138,28 +138,28 @@ cu_pkg_define_version(${CMAKE_CURRENT_LIST_DIR})
 # Generate speaker animation assets
 #
 if(CONFIG_ESP_BROOKESIA_SYSTEMS_ENABLE_SPEAKER)
-    set(SPEAKER_ASSETS_ANIMATIONS_DIR "${SYSTEM_SPEAKER_SRC_DIR}/assets/animations")
-    spiffs_create_partition_assets(
-        anim_boot
-        "${SPEAKER_ASSETS_ANIMATIONS_DIR}/boot"
-        FLASH_IN_PROJECT
-        MMAP_FILE_SUPPORT_FORMAT ".aaf"
-        IMPORT_INC_PATH "${SPEAKER_ASSETS_ANIMATIONS_DIR}"
-    )
-    spiffs_create_partition_assets(
-        anim_emotion
-        "${SPEAKER_ASSETS_ANIMATIONS_DIR}/emotion"
-        FLASH_IN_PROJECT
-        MMAP_FILE_SUPPORT_FORMAT ".aaf"
-        IMPORT_INC_PATH "${SPEAKER_ASSETS_ANIMATIONS_DIR}"
-    )
-    spiffs_create_partition_assets(
-        anim_icon
-        "${SPEAKER_ASSETS_ANIMATIONS_DIR}/icon"
-        FLASH_IN_PROJECT
-        MMAP_FILE_SUPPORT_FORMAT ".aaf"
-        IMPORT_INC_PATH "${SPEAKER_ASSETS_ANIMATIONS_DIR}"
-    )
+    # set(SPEAKER_ASSETS_ANIMATIONS_DIR "${SYSTEM_SPEAKER_SRC_DIR}/assets/animations")
+    # spiffs_create_partition_assets(
+    #     anim_boot
+    #     "${SPEAKER_ASSETS_ANIMATIONS_DIR}/boot"
+    #     FLASH_IN_PROJECT
+    #     MMAP_FILE_SUPPORT_FORMAT ".aaf"
+    #     IMPORT_INC_PATH "${SPEAKER_ASSETS_ANIMATIONS_DIR}"
+    # )
+    # spiffs_create_partition_assets(
+    #     anim_emotion
+    #     "${SPEAKER_ASSETS_ANIMATIONS_DIR}/emotion"
+    #     FLASH_IN_PROJECT
+    #     MMAP_FILE_SUPPORT_FORMAT ".aaf"
+    #     IMPORT_INC_PATH "${SPEAKER_ASSETS_ANIMATIONS_DIR}"
+    # )
+    # spiffs_create_partition_assets(
+    #     anim_icon
+    #     "${SPEAKER_ASSETS_ANIMATIONS_DIR}/icon"
+    #     FLASH_IN_PROJECT
+    #     MMAP_FILE_SUPPORT_FORMAT ".aaf"
+    #     IMPORT_INC_PATH "${SPEAKER_ASSETS_ANIMATIONS_DIR}"
+    # )
 endif()
 
 #
