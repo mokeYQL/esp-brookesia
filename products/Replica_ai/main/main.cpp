@@ -20,6 +20,7 @@
 #include "modules/led_indicator.h"
 #include "modules/file_system.hpp"
 #include "modules/system.hpp"
+#include "modules/audio.hpp"
 
 constexpr bool EXAMPLE_SHOW_MEM_INFO = true;
 extern "C" void app_main()
@@ -34,7 +35,10 @@ extern "C" void app_main()
     {
         ESP_UTILS_LOGE("Initialize file system failed, related features will be disabled");
     }
-    // assert(system_init() && "Initialize system failed");
+    // 100k多
+    assert(audio_init() && "Initialize audio failed");
+    assert(system_init() && "Initialize system failed");
+
     if constexpr (EXAMPLE_SHOW_MEM_INFO)
     {
         esp_utils::thread_config_guard thread_config({

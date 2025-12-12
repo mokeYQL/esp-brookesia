@@ -7,7 +7,7 @@
 #include "esp_event.h"
 #include "bsp/esp-bsp.h"
 #ifdef ESP_UTILS_LOG_TAG
-#   undef ESP_UTILS_LOG_TAG
+#undef ESP_UTILS_LOG_TAG
 #endif
 #define ESP_UTILS_LOG_TAG "LedIndicator"
 #include "esp_lib_utils.h"
@@ -54,14 +54,16 @@ blink_step_t const *led_indicator_blink_lists[] = {
     [BLINK_MAX] = NULL,
 };
 
-
 static void wifi_update_led_indicator_state(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
-    if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
+    if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED)
+    {
         ESP_UTILS_LOGI("Wifi disconnected, update led indicator");
         led_indicator_stop(led_indicator_handle, BLINK_WIFI_CONNECTED);
         led_indicator_start(led_indicator_handle, BLINK_WIFI_DISCONNECTED);
-    } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
+    }
+    else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
+    {
         ESP_UTILS_LOGI("Wifi connected, update led indicator");
         led_indicator_stop(led_indicator_handle, BLINK_WIFI_DISCONNECTED);
         led_indicator_start(led_indicator_handle, BLINK_WIFI_CONNECTED);
@@ -85,6 +87,7 @@ bool led_indicator_init(void)
 
     ESP_UTILS_CHECK_ERROR_RETURN(led_indicator_new_ledc_device(&config, &ledc_config, &led_indicator_handle), false, "Failed to create led indicator device");
     ESP_UTILS_CHECK_ERROR_RETURN(led_indicator_start(led_indicator_handle, BLINK_WIFI_DISCONNECTED), false, "Failed to start led indicator");
+    ESP_UTILS_LOGW("Initialize led_indicator_init done...");
     return true;
 }
 

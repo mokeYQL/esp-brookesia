@@ -5,7 +5,7 @@
  */
 #include "esp_brookesia.hpp"
 #ifdef ESP_UTILS_LOG_TAG
-#   undef ESP_UTILS_LOG_TAG
+#undef ESP_UTILS_LOG_TAG
 #endif
 #define ESP_UTILS_LOG_TAG "Services"
 #include "esp_lib_utils.h"
@@ -19,6 +19,6 @@ bool services_init()
 
     /* Startup NVS Service */
     ESP_UTILS_CHECK_FALSE_RETURN(StorageNVS::requestInstance().begin(), false, "Failed to begin storage NVS");
-
+    ESP_UTILS_LOGW("Initialize services_init done...");
     return true;
 }
