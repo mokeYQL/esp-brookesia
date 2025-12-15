@@ -7,6 +7,6 @@
 
 bool system_init();
 
-// bool system_check_is_developer_mode();
+bool system_check_is_developer_mode();
 
-// void restart_usb_serial_jtag();
+void restart_usb_serial_jtag();

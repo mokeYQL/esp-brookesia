@@ -25,6 +25,7 @@
 constexpr bool EXAMPLE_SHOW_MEM_INFO = true;
 extern "C" void app_main()
 {
+    // restart_usb_serial_jtag();
     auto default_dummy_draw = true;
     ESP_UTILS_LOG_TRACE_GUARD();
     printf("Project version: %s\n", CONFIG_APP_PROJECT_VER);
