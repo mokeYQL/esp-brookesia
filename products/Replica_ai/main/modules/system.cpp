@@ -101,6 +101,12 @@ bool system_init()
     ESP_UTILS_CHECK_FALSE_RETURN(speaker->addStylesheet(stylesheet.get()), false, "Add stylesheet failed");
     ESP_UTILS_CHECK_FALSE_RETURN(speaker->activateStylesheet(stylesheet.get()), false, "Activate stylesheet failed");
 
+    stylesheet = nullptr;
+
+    /* Begin the speaker */
+    LvLockGuard gui_guard;
+    ESP_UTILS_CHECK_FALSE_RETURN(speaker->begin(), false, "Begin failed");
+
     return true;
 }
 
