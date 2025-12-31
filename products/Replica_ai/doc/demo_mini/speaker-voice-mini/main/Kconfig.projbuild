@@ -1,0 +1,17 @@
+menu "Example Configuration"
+
+    menuconfig EXAMPLE_COZE_AGENT_ENABLE_DEFAULT_CONFIG
+        bool "Default coze agent config"
+        default n
+
+    if EXAMPLE_COZE_AGENT_ENABLE_DEFAULT_CONFIG
+
+
+        config EXAMPLE_COZE_AGENT_PRIVATE_KEY_FILE_PATH
+            string "Private key"
+            default "./private_key.pem"
+
+
+    endif
+
+endmenu
