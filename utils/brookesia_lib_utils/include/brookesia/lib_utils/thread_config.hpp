@@ -55,6 +55,13 @@ struct ThreadConfig {
      * @return Currently active ThreadConfig
      */
     static ThreadConfig get_applied_config();
+
+    /**
+     * @brief Get the current thread configuration
+     *
+     * @return Current ThreadConfig
+     */
+    static ThreadConfig get_current_config();
 };
 
 BROOKESIA_DESCRIBE_STRUCT(ThreadConfig, (), (name, core_id, priority, stack_size, stack_in_ext))
@@ -104,14 +111,14 @@ private:
  *
  * @example
  * {
- *     BROOKESIA_THREAD_CONFIG_GUARD((ThreadConfig{
+ *     BROOKESIA_THREAD_CONFIG_GUARD({
  *          .stack_size = 10 * 1024,
- *     }));
+ *     });
  *     boost::thread([&]() {
  *         // Thread will be created with 10KB stack size
  *     });
  * }  // Original configuration is restored here
  */
-#define BROOKESIA_THREAD_CONFIG_GUARD(config) \
+#define BROOKESIA_THREAD_CONFIG_GUARD(...) \
     esp_brookesia::lib_utils::ThreadConfigGuard \
-    BROOKESIA_THREAD_CONFIG_CONCAT(thread_config_guard_, __LINE__)(config);
+    BROOKESIA_THREAD_CONFIG_CONCAT(thread_config_guard_, __LINE__)(__VA_ARGS__);

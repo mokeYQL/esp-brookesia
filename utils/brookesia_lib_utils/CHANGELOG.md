@@ -1,6 +1,40 @@
 # ChangeLog
 
-### Initial Release:
+## v0.7.2 - 2025-12-24
+
+#### Enhancements:
+
+* feat(task_scheduler): add 'get_executor()' and 'get_task_count()' methods
+* fix(task_scheduler): rename 'enable_post_execute_in_order' to 'enable_serial_execution' in 'GroupConfig'
+* fix(task_scheduler): avoid any type of task from being executed in parallel when the group is structured with 'enable_serial_execution'
+* feat(state_machine): add 'is_updating()' method
+* feat(describe_helpers): optimize pointer serialization and deserialization support
+* feat(describe_helpers): add support for 'std::monostate'
+* feat(repo): update 'esp-boost' dependency to '>=0.4.2,<0.5.0'
+* feat(repo): add README
+
+#### Bug Fixes:
+
+* fix(task_scheduler): avoid periodic task from being executed repeatedly
+* fix(function_guard): add exception handling in destructor
+* fix(log): fix garbled display issue for 'uint8_t/int8_t *'
+
+## v0.7.1 - 2025-12-07
+
+#### Enhancements:
+
+* feat(describe_helpers): Add describe helpers for converting between any type and string (JSON format), JSON and any type
+* feat(describe_helpers): Add support for 'std::variant', 'std::function'
+* feat(state_machine): Add 'wait_all_transitions()', 'force_transition_to()' methods
+* feat(task_scheduler): Add 'dispatch()' method
+
+#### Bug Fixes:
+
+* fix(log): Fix garbled display issue for 'int8_t'
+
+## v0.7.0 - 2025-11-28
+
+### Initial Release
 
 - feat(repo): Add task scheduler (based on Boost.Asio) supporting multi-threaded task management, including immediate, delayed, and periodic tasks
 - feat(repo): Support thread configuration (name, priority, stack size, stack location, CPU binding configuration)

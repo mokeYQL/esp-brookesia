@@ -101,7 +101,7 @@ bool StateMachine::start(std::shared_ptr<TaskScheduler> task_scheduler, const st
 
     // Configure group for serial execution (ensures thread-safe state transitions)
     TaskScheduler::GroupConfig config;
-    config.enable_post_execute_in_order = true;
+    config.enable_serial_execution = true;
     BROOKESIA_CHECK_FALSE_RETURN(
         task_scheduler->configure_group(task_group_name_, config), false,
         "Failed to configure group '%1%' for state machine", task_group_name_
@@ -145,11 +145,11 @@ void StateMachine::stop()
     });
 }
 
-bool StateMachine::trigger_action(const std::string &action)
+bool StateMachine::trigger_action(const std::string &action, bool use_dispatch)
 {
     BROOKESIA_LOG_TRACE_GUARD_WITH_THIS();
 
-    BROOKESIA_LOGD("Params: action(%1%)", action);
+    BROOKESIA_LOGD("Params: action(%1%), use_dispatch(%2%)", action, use_dispatch);
 
     // Get scheduler reference under lock
     std::shared_ptr<TaskScheduler> scheduler;
@@ -185,7 +185,11 @@ bool StateMachine::trigger_action(const std::string &action)
         }
 
         // Call transition_to without holding the lock, passing action as action
-        BROOKESIA_CHECK_FALSE_EXIT(transition_to(next_state, action), "Failed to transition to state '%1%'", next_state);
+        auto is_success = transition_to(next_state, action);
+        if (!is_success) {
+            BROOKESIA_LOGE("Failed to transition to state '%1%'", next_state);
+            return;
+        }
 
         // Get current state and callback without holding lock during callback execution
         std::string final_state;
@@ -201,9 +205,72 @@ bool StateMachine::trigger_action(const std::string &action)
             callback(last_state, action, final_state);
         }
     };
+    if (use_dispatch) {
+        BROOKESIA_CHECK_FALSE_RETURN(
+            scheduler->dispatch(std::move(task), nullptr, task_group_name_), false,
+            "Failed to dispatch trigger action task"
+        );
+    } else {
+        BROOKESIA_CHECK_FALSE_RETURN(
+            scheduler->post(std::move(task), nullptr, task_group_name_), false,
+            "Failed to post trigger action task"
+        );
+    }
+
+    return true;
+}
+
+bool StateMachine::wait_all_transitions(uint32_t timeout_ms)
+{
+    BROOKESIA_LOG_TRACE_GUARD_WITH_THIS();
+
+    BROOKESIA_LOGD("Params: timeout_ms(%1%)", timeout_ms);
+
+    BROOKESIA_CHECK_FALSE_RETURN(is_running(), false, "Not running");
+
+    std::shared_ptr<TaskScheduler> scheduler;
+    {
+        boost::lock_guard lock(mutex_);
+        scheduler = task_scheduler_;
+    }
+
     BROOKESIA_CHECK_FALSE_RETURN(
-        scheduler->post(std::move(task), nullptr, task_group_name_), false, "Failed to post trigger action task"
+        scheduler->wait_group(task_group_name_, timeout_ms), false,
+        "Failed to wait for all actions finished within timeout %1% ms", timeout_ms
     );
+
+    return true;
+}
+
+bool StateMachine::force_transition_to(const std::string &target_state)
+{
+    BROOKESIA_LOG_TRACE_GUARD_WITH_THIS();
+
+    BROOKESIA_LOGD("Params: target_state(%1%)", target_state);
+
+    BROOKESIA_CHECK_FALSE_RETURN(is_running(), false, "Not running");
+
+    std::shared_ptr<TaskScheduler> scheduler;
+    {
+        boost::lock_guard lock(mutex_);
+        scheduler = task_scheduler_;
+    }
+
+    // Cancel all transitions immediately
+    scheduler->cancel_group(task_group_name_);
+    // Wait for all transitions to be cancelled
+    BROOKESIA_CHECK_FALSE_EXECUTE(
+    scheduler->wait_group(task_group_name_, STATE_MACHINE_STOP_TIMEOUT_MS), {}, {
+        BROOKESIA_LOGE(
+            "Wait for all transitions to be cancelled within timeout %1% ms timeout", STATE_MACHINE_STOP_TIMEOUT_MS
+        );
+    });
+
+    // Transition to target state immediately
+    {
+        boost::lock_guard lock(mutex_);
+        current_state_ = target_state;
+    }
 
     return true;
 }
@@ -249,7 +316,7 @@ bool StateMachine::setup_state_tasks(const std::string &name)
         TaskScheduler::TaskId task_id = 0;
         scheduler->post_delayed([this, ev = state->get_timeout_action()] {
             BROOKESIA_LOG_TRACE_GUARD_WITH_THIS();
-            BROOKESIA_CHECK_FALSE_EXIT(this->trigger_action(ev), "Cannot trigger action '%1%'", ev);
+            BROOKESIA_CHECK_FALSE_EXIT(this->trigger_action(ev, true), "Cannot trigger action '%1%'", ev);
         }, state->get_timeout_ms(), &task_id, task_group_name_);
 
         // Update task_id requires lock protection
@@ -284,7 +351,7 @@ bool StateMachine::enter_initial_state(const std::string &name)
 
     // Step 3: Call on_enter guard (without holding lock to allow state logic to run freely)
     BROOKESIA_CHECK_FALSE_RETURN(
-        state->on_enter(""), false, "Entry denied: cannot enter initial state '%1%'", name
+        state->on_enter(), false, "Entry denied: cannot enter initial state '%1%'", name
     );
 
     // Step 4: Update current state under lock
@@ -338,9 +405,11 @@ bool StateMachine::transition_to(const std::string &next, const std::string &act
 
     // Step 2: Exit current state (without holding lock to allow state logic to run freely)
     BROOKESIA_LOGD("Exiting state '%1%' to '%2%' by action '%3%'", previous_state, next, action);
-    BROOKESIA_CHECK_FALSE_RETURN(
-        current_state_obj->on_exit(next, action), false, "Exit denied: cannot exit '%1%' to '%2%'", previous_state, next
-    );
+    auto is_success = current_state_obj->on_exit(next, action);
+    if (!is_success) {
+        BROOKESIA_LOGE("Exit denied: cannot exit '%1%' to '%2%'", previous_state, next);
+        return false;
+    }
 
     // Step 3: Cancel current state's tasks (without holding lock to avoid deadlock)
     cancel_current_tasks();
@@ -353,7 +422,7 @@ bool StateMachine::transition_to(const std::string &next, const std::string &act
         BROOKESIA_LOGW("Rolling back to state '%1%'", previous_state);
 
         // Re-enter previous state (best effort rollback)
-        current_state_obj->on_enter("");
+        current_state_obj->on_enter();
 
         // Restore previous state under lock
         {

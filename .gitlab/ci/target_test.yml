@@ -33,19 +33,26 @@ variables:
     - pip install -r .gitlab/requirements/requirement.pytest.txt
     - pytest ${TEST_FOLDER} --target ${TEST_TARGET} --env ${TEST_ENV} --junitxml=XUNIT_RESULT.xml
 
+.idf_esp32s3_version_matrix: &idf_esp32s3_version_matrix
+  - IDF_TARGET: esp32s3
+    IDF_VERSION: "5.5"
+    ENV_TAG: "generic"
+
 .idf_target_version_matrix: &idf_target_version_matrix
   - IDF_TARGET: esp32s3
     IDF_VERSION: "5.5"
     ENV_TAG: "generic"
-  # - IDF_TARGET: esp32s3
-  #   IDF_VERSION: "6.0"
-  #   ENV_TAG: "generic"
   - IDF_TARGET: esp32p4
     IDF_VERSION: "5.5"
+    ENV_TAG: "generic,eco4"
+
+.idf_target_version_matrix_p4_eco4_function_ev_board: &idf_target_version_matrix_p4_eco4_function_ev_board
+  - IDF_TARGET: esp32s3
+    IDF_VERSION: "5.5"
     ENV_TAG: "generic"
-  # - IDF_TARGET: esp32p4
-  #   IDF_VERSION: "6.0"
-  #   ENV_TAG: "generic"
+  - IDF_TARGET: esp32p4
+    IDF_VERSION: "5.5"
+    ENV_TAG: "generic,eco4,esp32p4_function_ev_board"
 
 #
 # Test apps: brookesia_lib_utils
@@ -247,4 +254,98 @@ components_test_brookesia_lib_utils_time_profiler:
   variables:
     TEST_TARGET: ${IDF_TARGET}
     TEST_FOLDER: utils/brookesia_lib_utils/test_apps/time_profiler
+    TEST_ENV: ${ENV_TAG}
+# brookesia_service_manager
+components_test_brookesia_service_manager:
+  extends:
+    - .pytest_template
+    - .rules:build:test_apps_brookesia_service_manager
+  needs:
+    - job: "build_test_apps_brookesia_service_manager"
+      artifacts: true
+      optional: true
+  parallel:
+    matrix: *idf_target_version_matrix
+  tags:
+    - ${IDF_TARGET}
+    - ${ENV_TAG}
+  variables:
+    TEST_TARGET: ${IDF_TARGET}
+    TEST_FOLDER: service/brookesia_service_manager/test_apps
+    TEST_ENV: ${ENV_TAG}
+# brookesia_service_nvs
+components_test_brookesia_service_nvs:
+  extends:
+    - .pytest_template
+    - .rules:build:test_apps_brookesia_service_nvs
+  needs:
+    - job: "build_test_apps_brookesia_service_nvs"
+      artifacts: true
+      optional: true
+  parallel:
+    matrix: *idf_target_version_matrix
+  tags:
+    - ${IDF_TARGET}
+    - ${ENV_TAG}
+  variables:
+    TEST_TARGET: ${IDF_TARGET}
+    TEST_FOLDER: service/brookesia_service_nvs/test_apps
+    TEST_ENV: ${ENV_TAG}
+# brookesia_service_sntp
+components_test_brookesia_service_sntp:
+  extends:
+    - .pytest_template
+    - .rules:build:test_apps_brookesia_service_sntp
+  needs:
+    - job: "build_test_apps_brookesia_service_sntp"
+      artifacts: true
+      optional: true
+  parallel:
+    matrix: *idf_target_version_matrix
+  tags:
+    - ${IDF_TARGET}
+    - ${ENV_TAG}
+  variables:
+    TEST_TARGET: ${IDF_TARGET}
+    TEST_FOLDER: service/brookesia_service_sntp/test_apps
+    TEST_ENV: ${ENV_TAG}
+# brookesia_service_wifi
+components_test_brookesia_service_wifi:
+  extends:
+    - .pytest_template
+    - .rules:build:test_apps_brookesia_service_wifi
+  needs:
+    - job: "build_test_apps_brookesia_service_wifi"
+      artifacts: true
+      optional: true
+  parallel:
+    matrix: *idf_target_version_matrix_p4_eco4_function_ev_board
+  tags:
+    - ${IDF_TARGET}
+    - ${ENV_TAG}
+  variables:
+    TEST_TARGET: ${IDF_TARGET}
+    TEST_FOLDER: service/brookesia_service_wifi/test_apps
+    TEST_ENV: ${ENV_TAG}
+
+#
+# Examples
+#
+# service_console
+examples_test_service_console:
+  extends:
+    - .pytest_template
+    - .rules:build:examples_service_console
+  needs:
+    - job: "build_examples_service_console"
+      artifacts: true
+      optional: true
+  parallel:
+    matrix: *idf_target_version_matrix_p4_eco4_function_ev_board
+  tags:
+    - ${IDF_TARGET}
+    - ${ENV_TAG}
+  variables:
+    TEST_TARGET: ${IDF_TARGET}
+    TEST_FOLDER: examples/service_console
     TEST_ENV: ${ENV_TAG}

@@ -2,12 +2,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # '''
-# Steps to run these cases (Take `esp32s3` and `ESP-IDF 5.5` as an example):
+# Steps to run these cases (Take `esp32s3` as an example):
 #
 # - Build
 #   - . ${IDF_PATH}/export.sh
+#   - export IDF_CI_BUILD=y
 #   - pip install idf_build_apps
-#   - idf-build-apps build -t esp32s3 --manifest-files=".build-rules.yml" --path='./utils/brookesia_lib_utils/test_apps/log' --recursive --build-dir="5.5/build_@t_@w"
+#   - idf-build-apps build -t esp32s3 --manifest-files=".build-rules.yml" --path='./utils/brookesia_lib_utils/test_apps/log' --recursive --build-dir="@v/build_@t_@w"
 #
 # - Test
 #   - ${IDF_PATH}/install.sh --enable-pytest
@@ -47,15 +48,6 @@ def get_index_and_name_list(response: bytes):
     return result
 
 
-@pytest.mark.target('esp32s3')
-@pytest.mark.target('esp32p4')
-@pytest.mark.env('generic')
-@pytest.mark.parametrize(
-    'config',
-    [
-        'defaults',
-    ],
-)
 def test(dut: Dut)-> None:
     dut.expect(ENTER_RESPONSE_LIST, timeout=5)
 
@@ -106,3 +98,29 @@ def test(dut: Dut)-> None:
 
     if len(failed_name_and_numbers) > 0:
         pytest.fail(f"The following numbers failed or timed out: {failed_name_and_numbers}")
+
+
+@pytest.mark.target('esp32s3')
+@pytest.mark.env('generic')
+@pytest.mark.parametrize(
+    'config',
+    [
+        'defaults',
+    ],
+)
+@pytest.mark.timeout(30 * 60)  # 30 minutes
+def test_esp32s3(dut: Dut)-> None:
+    test(dut)
+
+
+@pytest.mark.target('esp32p4')
+@pytest.mark.env('generic,eco4')
+@pytest.mark.parametrize(
+    'config',
+    [
+        'defaults',
+    ],
+)
+@pytest.mark.timeout(30 * 60)  # 30 minutes
+def test_esp32p4(dut: Dut)-> None:
+    test(dut)
