@@ -1,0 +1,7 @@
+## IDF Component Manager Manifest File
+dependencies:
+  idf: ">=5.5.0"
+
+  # Brookesia Core framework
+  brookesia_core:
+    override_path: "../../../core/brookesia_core"
