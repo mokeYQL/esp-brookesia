@@ -15,13 +15,18 @@
 
 #include "modules/audio_sys.h"
 #include "modules/display.hpp"
+#include "modules/lvgl_demo.hpp"
 
 constexpr bool EXAMPLE_SHOW_MEM_INFO = false;
-constexpr bool default_dummy_draw = true;
+constexpr bool default_dummy_draw = false;
 extern "C" void app_main()
 {
 
     assert(display_init(default_dummy_draw) && "Initialize display failed");
+
+    /* 运行 LVGL 示例 */
+    lvgl_demo_run(LVGL_DEMO_WIDGETS);
+
     if constexpr (EXAMPLE_SHOW_MEM_INFO)
     {
         esp_utils::thread_config_guard thread_config({

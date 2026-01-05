@@ -189,7 +189,7 @@ CONFIG_LV_FONT_MONTSERRAT_44=y # 44pt：超大标题
 CONFIG_LV_FONT_FMT_TXT_LARGE=y # 字体格式：大模式（支持超大字符集，如中文）
 CONFIG_LV_USE_FONT_COMPRESSED=y # 启用字体压缩（节省 Flash 占用约 50%）
 CONFIG_LV_USE_QRCODE=y # 启用二维码生成功能
-CONFIG_LV_BUILD_EXAMPLES=n # 不构建 LVGL 示例代码（节省编译时间）
+CONFIG_LV_BUILD_EXAMPLES=y # 不构建 LVGL 示例代码（节省编译时间）
 
 CONFIG_ESP_LCD_TOUCH_CST816S_DISABLE_READ_ID=y # 禁用 CST816S 触摸控制器读取 ID（兼容性修复）
 
