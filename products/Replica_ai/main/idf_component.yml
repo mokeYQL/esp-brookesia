@@ -16,3 +16,6 @@ dependencies:
   #   public: true
   espressif/esp-lib-utils: ^0.3.0
   espressif/esp-boost: ^0.4.1
+
+  echoear:
+    override_path: "../common_components/echoear"
