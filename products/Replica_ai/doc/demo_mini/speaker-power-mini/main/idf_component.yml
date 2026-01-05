@@ -1,0 +1,23 @@
+dependencies:
+  idf: ">=5.5.0"
+  # espressif/esp_tinyusb: "^2.0.0"
+  # touch_button: "*"
+  # touch_slider_sensor: "*"
+  espressif2022/bmi270: "^1.1.0~2"
+  # espressif/led_indicator: ^2.0.1
+
+  # Since the following components need to be patched, a fixed version is used here
+  # espressif/esp_websocket_client: "1.5.0"
+  # espressif/gmf_core: "0.6.1"
+  # espressif/esp_lvgl_port: "2.6.0"
+
+  brookesia_core:
+    version: "*"
+    override_path: "../../../core/brookesia_core"
+  echoear:
+    version: "*"
+    override_path: "../common_components/echoear"
+  espressif/gmf_ai_audio:
+    override_path: "../common_components/espressif__gmf_ai_audio"
+  bq27220:
+    override_path: "../common_components/bq27220"

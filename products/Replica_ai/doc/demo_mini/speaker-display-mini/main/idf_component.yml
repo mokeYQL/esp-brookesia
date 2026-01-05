@@ -1,0 +1,8 @@
+dependencies:
+  idf: ">=5.5.0"
+  espressif/esp_lvgl_port: "^2.6.0"
+
+  echoear:
+    version: "*"
+    override_path: "../common_components/echoear"
+

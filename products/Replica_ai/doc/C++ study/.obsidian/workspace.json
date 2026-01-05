@@ -1,0 +1,370 @@
+{
+  "main": {
+    "id": "6431f20d9e06402b",
+    "type": "split",
+    "children": [
+      {
+        "id": "daec027241d89cb7",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0f0ac9027008d65f",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "关系图谱"
+            }
+          },
+          {
+            "id": "231cbace5fa7082f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "1.0乐鑫喵伴整体框架.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "1.0乐鑫喵伴整体框架"
+            }
+          },
+          {
+            "id": "fa256cbe39b871d0",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "喵伴IO口.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "喵伴IO口"
+            }
+          },
+          {
+            "id": "a2754ecac1b60bc8",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "调用关系图modules && managed_components.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "调用关系图modules && managed_components"
+            }
+          },
+          {
+            "id": "a55fa4e8d7ebd3d9",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "sdkconfig.defaults.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "sdkconfig.defaults"
+            }
+          },
+          {
+            "id": "964303d68a1fe265",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "project_include.cmake.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "project_include.cmake"
+            }
+          },
+          {
+            "id": "76e36ba3ac6edc5d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "1.0乐鑫喵伴整体框架.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "1.0乐鑫喵伴整体框架"
+            }
+          },
+          {
+            "id": "ce6d2d01903cf370",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "CMakeLists.txt.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "CMakeLists.txt"
+            }
+          },
+          {
+            "id": "1f67c0f2d7821640",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "brookesia_core 初步学习.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "brookesia_core 初步学习"
+            }
+          },
+          {
+            "id": "23016dbd506c7dcb",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "C++重点学习  乐鑫喵伴.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "C++重点学习  乐鑫喵伴"
+            }
+          },
+          {
+            "id": "46aaa866637fff42",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "组件调用汇总/组件调用详解-按功能进行拆分.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "组件调用详解-按功能进行拆分"
+            }
+          },
+          {
+            "id": "a20cbc45c1036f5d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "ESP32S3内存分布详解.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "ESP32S3内存分布详解"
+            }
+          }
+        ],
+        "currentTab": 11
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "89f8809f8e46acac",
+    "type": "split",
+    "children": [
+      {
+        "id": "1142d75af873984c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a4ff2762b412ff1f",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": true
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "3594d1a4f67bbfb2",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "d45c86a00b666c22",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "046f752f7b7da146",
+    "type": "split",
+    "children": [
+      {
+        "id": "41265835e7312337",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "581f4b7f54f1f28d",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "ESP32S3内存分布详解.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "ESP32S3内存分布详解 的反向链接列表"
+            }
+          },
+          {
+            "id": "65df4ee79fcde0bf",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "出链"
+            }
+          },
+          {
+            "id": "32c6a40ba7c21a02",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "087494bccd58c3c6",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "添加笔记属性"
+            }
+          },
+          {
+            "id": "4b6b3aa6a1ef0281",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "大纲"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:创建新数据库": false
+    }
+  },
+  "active": "a20cbc45c1036f5d",
+  "lastOpenFiles": [
+    "Pasted image 20260105100220.png",
+    "Pasted image 20260105095924.png",
+    "Pasted image 20260105094143.png",
+    "Pasted image 20260105094020.png",
+    "Pasted image 20260105093052.png",
+    "Pasted image 20260105093000.png",
+    "Pasted image 20260105091905.png",
+    "Pasted image 20260105085825.png",
+    "组件调用汇总/组件调用详解-按功能进行拆分.md",
+    "ESP32S3内存分布详解.md",
+    "调用关系图modules && managed_components.md",
+    "组件调用汇总",
+    "1框架说明.md",
+    "回声消除原理.md",
+    "喵伴组件函数关键函数解析/espressif__button.md",
+    "未命名.base",
+    "未命名.canvas",
+    "partitions.csv的详细介绍.md",
+    "喵伴组件函数关键函数解析",
+    "喵伴IO口.md",
+    "brookesia_core 初步学习.md",
+    "C++重点学习  乐鑫喵伴.md",
+    "CMakeLists.txt.md",
+    "log 关键解释.md",
+    "Pasted image 20251204170130.png",
+    "Pasted image 20251212103736.png",
+    "Pasted image 20251212103756.png",
+    "project_include.cmake.md",
+    "sdkconfig.defaults.md",
+    "StorageNVS—begin()详解.md",
+    "1.0乐鑫喵伴整体框架.md",
+    "欢迎.md",
+    "C++的不同.md"
+  ]
+}

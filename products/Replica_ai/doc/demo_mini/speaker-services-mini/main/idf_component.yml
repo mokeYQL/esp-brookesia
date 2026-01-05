@@ -1,0 +1,8 @@
+dependencies:
+  idf: ">=5.5.0"
+
+  brookesia_core:
+    version: "*"
+    override_path: "../../../core/brookesia_core"
+  espressif/gmf_ai_audio:
+    override_path: "../common_components/espressif__gmf_ai_audio" 

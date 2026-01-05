@@ -1,0 +1,53 @@
+# C++知识点案例 - 书籍章节映射表
+# 格式：文件名|知识点|C++ Primer章节|Effective C++章节
+
+001_namespace.cpp|命名空间|第3章 字符串、向量和数组 - 3.1 命名空间的using声明|无直接对应章节
+002_class_basic.cpp|类的基本概念|第7章 类 - 7.1 定义抽象数据类型|条款1 视C++为一个语言联邦
+003_access_control.cpp|访问控制|第7章 类 - 7.2 访问控制与封装|条款22 声明为private继承意味什么
+004_constructor_initializer_list.cpp|构造函数与初始化列表|第7章 类 - 7.5 构造函数再探|条款4 确定对象被使用前已先被初始化
+005_smart_pointers.cpp|智能指针|第12章 动态内存 - 12.1 动态内存与智能指针|条款13 以对象管理资源
+006_stl_containers.cpp|STL容器|第9章 顺序容器 - 9.1 顺序容器概述|条款18 让接口容易被正确使用，不易被误用
+007_inheritance_polymorphism.cpp|继承与多态|第15章 面向对象程序设计 - 15.1 OOP：概述|条款32 确定你的public继承塑模出is-a关系
+008_delete_functions.cpp|删除函数（= delete）|第7章 类 - 7.6 类的其他特性|条款11 在operator=中处理自我赋值
+009_enum_class.cpp|枚举类|第19章 特殊工具与技术 - 19.3 枚举类型|无直接对应章节
+010_structs.cpp|结构体使用|第2章 变量和基本类型 - 2.6 自定义数据结构|无直接对应章节
+011_type_aliases.cpp|类型别名|第2章 变量和基本类型 - 2.5 处理类型 - 2.5.1 类型别名|条款9 绝不在构造和析构过程中调用virtual函数
+012_function_overload_override.cpp|函数重载与覆盖|第6章 函数 - 6.4 函数重载|条款36 绝不重新定义继承而来的non-virtual函数
+013_static_members.cpp|静态成员|第7章 类 - 7.6 类的其他特性 - 7.6.2 静态成员|条款4 确定对象被使用前已先被初始化
+014_constexpr.cpp|constexpr常量|第2章 变量和基本类型 - 2.4 const限定符|条款2 尽量以const、enum、inline替换#define
+015_deprecated.cpp|deprecated属性|第19章 特殊工具与技术 - 19.4 运行时类型识别|无直接对应章节
+016_conditional_compilation.cpp|条件编译|第16章 模板与泛型编程 - 16.1 定义模板|无直接对应章节
+017_extern_c.cpp|extern "C"|第12章 动态内存 - 12.1.5 智能指针和异常|无直接对应章节
+018_templates.cpp|模板编程|第16章 模板与泛型编程 - 16.1 定义模板|条款41 了解隐式接口和编译期多态
+019_exception_handling.cpp|异常处理|第18章 用于大型程序的工具 - 18.1 异常处理|条款7 为多态基类声明virtual析构函数
+020_cpp11_features.cpp|C++11特性|第11章 关联容器 - 11.2 关联容器操作|无直接对应章节
+021_cpp11_more_features.cpp|更多C++11特性|第12章 动态内存 - 12.1 动态内存与智能指针|无直接对应章节
+022_cpp14_features.cpp|C++14特性|第12章 动态内存 - 12.1.2 shared_ptr类|无直接对应章节
+023_cpp17_features.cpp|C++17特性|第10章 泛型算法 - 10.3 定制操作|无直接对应章节
+024_cpp20_features.cpp|C++20特性|第16章 模板与泛型编程 - 16.1 定义模板|无直接对应章节
+025_lambda_expressions.cpp|Lambda表达式|第10章 泛型算法 - 10.3 定制操作 - 10.3.1 向算法传递函数|条款31 千万不要返回局部对象的引用，或指向它们的指针
+026_unique_ptr.cpp|std::unique_ptr智能指针|第12章 动态内存 - 12.1.1 unique_ptr类|条款18 让接口容易被正确使用，不易被误用
+027_structured_bindings.cpp|结构化绑定|第7章 类 - 7.3.2 类的作用域|无直接对应章节
+028_std_any.cpp|std::any类型擦除|第16章 模板与泛型编程 - 16.1 定义模板|条款31 千万不要返回局部对象的引用，或指向它们的指针
+029_std_map.cpp|std::map关联容器|第11章 关联容器 - 11.1 使用关联容器|条款24 若所有参数皆需类型转换，请为此采用non-member函数
+030_std_vector.cpp|std::vector动态数组|第9章 顺序容器 - 9.2 容器库概览|条款14 资源管理类中小心拷贝行为
+031_std_string_operations.cpp|std::string字符串操作|第3章 字符串、向量和数组 - 3.2 标准库类型string|条款17 以独立语句将newed对象置入智能指针
+032_static_variables.cpp|静态变量与RTC_NOINIT_ATTR|第2章 变量和基本类型 - 2.3 变量声明和定义的关系|条款4 确定对象被使用前已先被初始化
+033_constexpr_variables.cpp|constexpr编译期常量|第2章 变量和基本类型 - 2.4 const限定符|条款2 尽量以const、enum、inline替换#define
+034_namespace_using.cpp|命名空间using指令|第3章 字符串、向量和数组 - 3.1 命名空间的using声明|无直接对应章节
+035_default_optional_parameters.cpp|函数默认参数与可选参数|第6章 函数 - 6.5 特殊用途语言特性 - 6.5.1 默认实参|条款36 绝不重新定义继承而来的non-virtual函数
+036_dynamic_cast.cpp|dynamic_cast动态类型转换|第15章 面向对象程序设计 - 15.2 基类与派生类 - 15.2.3 虚函数与动态绑定|条款37 绝不重新定义继承而来的缺省参数值
+037_signal_slot.cpp|信号槽机制|第10章 泛型算法 - 10.3 定制操作|条款21 必须返回对象时，别妄想返回其reference
+038_exception_handling.cpp|异常处理机制|第18章 用于大型程序的工具 - 18.1 异常处理|条款7 为多态基类声明virtual析构函数
+039_raii_resource_management.cpp|RAII资源获取即初始化|第12章 动态内存 - 12.1 动态内存与智能指针|条款13 以对象管理资源
+040_std_function.cpp|std::function可调用对象包装器|第10章 泛型算法 - 10.3 定制操作|条款54 让自己熟悉TR1和Boost
+041_singleton_pattern.cpp|单例模式|第7章 类 - 7.6 类的其他特性 - 7.6.2 静态成员|条款04 确定对象被使用前已先被初始化
+042_conditional_compilation.cpp|条件编译|第16章 模板与泛型编程 - 16.1 定义模板|无直接对应章节
+043_bit_operations.cpp|位操作与寄存器访问|第4章 表达式 - 4.8 位运算符|无直接对应章节
+044_struct_initialization.cpp|结构体初始化与成员访问|第2章 变量和基本类型 - 2.6 自定义数据结构|无直接对应章节
+045_boost_thread_sleep.cpp|boost::this_thread::sleep_for时间处理|第12章 动态内存 - 12.2 动态数组|条款54 让自己熟悉TR1和Boost
+046_namespace_nesting.cpp|命名空间嵌套与using指令进阶|第3章 字符串、向量和数组 - 3.1 命名空间的using声明|无直接对应章节
+047_virtual_functions_advanced.cpp|虚函数与多态进阶|第15章 面向对象程序设计 - 15.3 虚函数 - 15.3.1 虚函数的工作原理|条款34 区分接口继承和实现继承
+048_static_assert.cpp|static_assert编译期断言|第2章 变量和基本类型 - 2.4 const限定符|条款02 尽量以const、enum、inline替换#define
+049_consteval_constinit.cpp|consteval和constinit编译期特性|第2章 变量和基本类型 - 2.4 const限定符|条款02 尽量以const、enum、inline替换#define
+050_cpp20_concepts.cpp|C++20 Concepts概念|第16章 模板与泛型编程 - 16.1 定义模板|条款41 了解隐式接口和编译期多态
