@@ -5,6 +5,7 @@
  */
 
 #include <stdio.h>
+#include <cassert>
 #include "esp_lib_utils.h"
 #include "boost/thread.hpp"
 #ifdef ESP_UTILS_LOG_TAG
@@ -13,11 +14,14 @@
 #define ESP_UTILS_LOG_TAG "Main"
 
 #include "modules/audio_sys.h"
+#include "modules/display.hpp"
 
-constexpr bool EXAMPLE_SHOW_MEM_INFO = true;
-
+constexpr bool EXAMPLE_SHOW_MEM_INFO = false;
+constexpr bool default_dummy_draw = true;
 extern "C" void app_main()
 {
+
+    assert(display_init(default_dummy_draw) && "Initialize display failed");
     if constexpr (EXAMPLE_SHOW_MEM_INFO)
     {
         esp_utils::thread_config_guard thread_config({
@@ -31,7 +35,7 @@ extern "C" void app_main()
 
                 audio_sys_get_real_time_stats();
 
-                boost::this_thread::sleep_for(boost::chrono::seconds(5));
+                boost::this_thread::sleep_for(boost::chrono::seconds(20));
             } })
             .detach();
     }
