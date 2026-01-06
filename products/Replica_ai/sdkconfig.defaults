@@ -189,7 +189,6 @@ CONFIG_LV_FONT_MONTSERRAT_44=y # 44pt：超大标题
 CONFIG_LV_FONT_FMT_TXT_LARGE=y # 字体格式：大模式（支持超大字符集，如中文）
 CONFIG_LV_USE_FONT_COMPRESSED=y # 启用字体压缩（节省 Flash 占用约 50%）
 CONFIG_LV_USE_QRCODE=y # 启用二维码生成功能
-CONFIG_LV_BUILD_EXAMPLES=y # 不构建 LVGL 示例代码（节省编译时间）
 
 CONFIG_ESP_LCD_TOUCH_CST816S_DISABLE_READ_ID=y # 禁用 CST816S 触摸控制器读取 ID（兼容性修复）
 
@@ -197,6 +196,20 @@ CONFIG_BSP_I2C_NUM=0 # I2C 总线编号：0（使用第一个 I2C 控制器）
 CONFIG_BSP_LCD_DRAW_BUF_HEIGHT=15 # LCD 绘图缓冲区高度：15 行（平衡内存占用和渲染效率）
 CONFIG_BSP_LCD_DRAW_BUF_DOUBLE=y # LCD 双缓冲（避免屏幕撕裂，一帧显示时下一帧在后台渲染）
 
+
+# LVGL 官方 Demo 配置（需配合 CONFIG_LV_BUILD_EXAMPLES=y 使用）
+CONFIG_LV_BUILD_EXAMPLES=y # 构建 LVGL 示例代码（包含官方 demo）
+CONFIG_LV_USE_DEMO_WIDGETS=y # 官方 Widgets 示例：展示各种控件（标签、按钮、滑块、开关等）
+CONFIG_LV_USE_DEMO_BENCHMARK=y # 性能测试示例：测试渲染性能和内存占用
+CONFIG_LV_USE_DEMO_MUSIC=y # 音乐播放器示例：精美的音乐播放器 UI 界面
+CONFIG_LV_USE_DEMO_STRESS=y # 压力测试示例：测试系统稳定性和极限性能
+CONFIG_LV_USE_DEMO_FLEX_LAYOUT=y # Flex 布局示例：展示弹性布局功能
+#CONFIG_LV_USE_DEMO_TRANSFORM=y # 变换效果示例：依赖 multilang demo 资源，暂时禁用
+CONFIG_LV_USE_DEMO_SCROLL=y # 滚动效果示例：展示各种滚动模式和效果
+#CONFIG_LV_USE_DEMO_MULTILANG=y # 多语言示例：使用已废弃的 lv_imgfont_create API，暂时禁用
+CONFIG_LV_USE_DEMO_VECTOR_GRAPHIC=y # 矢量图形示例：展示矢量绘图能力
+#CONFIG_LV_USE_DEMO_RENDER=y # 渲染效果示例：需要参数配置，暂时禁用
+CONFIG_LV_USE_DEMO_KEYPAD_AND_ENCODER=y # 键盘和编码器示例：展示输入设备支持
 
 # ============================================
 # ESP-IDF 实验性功能
