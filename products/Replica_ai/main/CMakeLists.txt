@@ -1,38 +1,41 @@
-file(GLOB_RECURSE MAIN_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/*.c")
+file(GLOB_RECURSE MAIN_SRCS "main.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/*.c")
 
 set(EMBEDDED_FILES "")
 
 idf_component_register(
     SRCS ${MAIN_SRCS}
-    INCLUDE_DIRS "." "assets/animations"
+    INCLUDE_DIRS "." "assets/animations" "assets/images"
     EMBED_TXTFILES ${EMBEDDED_FILES}
-    REQUIRES esp_mmap_assets image_player
+    REQUIRES esp_mmap_assets image_player lvgl
 )
 
-set(PROJ_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(SPEAKER_ASSETS_ANIMATIONS_DIR "${PROJ_SRC_DIR}/assets/animations")
+# Fix LVGL header include path for generated image C files
+target_compile_options(${COMPONENT_LIB} PRIVATE "-DLV_LVGL_H_INCLUDE_SIMPLE")
 
-spiffs_create_partition_assets(
-    anim_boot
-    "${SPEAKER_ASSETS_ANIMATIONS_DIR}/boot"
-    FLASH_IN_PROJECT
-    MMAP_FILE_SUPPORT_FORMAT ".aaf"
-    IMPORT_INC_PATH "${SPEAKER_ASSETS_ANIMATIONS_DIR}"
-)
-spiffs_create_partition_assets(
-    anim_emotion
-    "${SPEAKER_ASSETS_ANIMATIONS_DIR}/emotion"
-    FLASH_IN_PROJECT
-    MMAP_FILE_SUPPORT_FORMAT ".aaf"
-    IMPORT_INC_PATH "${SPEAKER_ASSETS_ANIMATIONS_DIR}"
-)
-spiffs_create_partition_assets(
-    anim_icon
-    "${SPEAKER_ASSETS_ANIMATIONS_DIR}/icon"
-    FLASH_IN_PROJECT
-    MMAP_FILE_SUPPORT_FORMAT ".aaf"
-    IMPORT_INC_PATH "${SPEAKER_ASSETS_ANIMATIONS_DIR}"
-)
+# set(PROJ_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+# set(SPEAKER_ASSETS_ANIMATIONS_DIR "${PROJ_SRC_DIR}/assets/animations")
+
+# spiffs_create_partition_assets(
+#     anim_boot
+#     "${SPEAKER_ASSETS_ANIMATIONS_DIR}/boot"
+#     FLASH_IN_PROJECT
+#     MMAP_FILE_SUPPORT_FORMAT ".aaf"
+#     IMPORT_INC_PATH "${SPEAKER_ASSETS_ANIMATIONS_DIR}"
+# )
+# spiffs_create_partition_assets(
+#     anim_emotion
+#     "${SPEAKER_ASSETS_ANIMATIONS_DIR}/emotion"
+#     FLASH_IN_PROJECT
+#     MMAP_FILE_SUPPORT_FORMAT ".aaf"
+#     IMPORT_INC_PATH "${SPEAKER_ASSETS_ANIMATIONS_DIR}"
+# )
+# spiffs_create_partition_assets(
+#     anim_icon
+#     "${SPEAKER_ASSETS_ANIMATIONS_DIR}/icon"
+#     FLASH_IN_PROJECT
+#     MMAP_FILE_SUPPORT_FORMAT ".aaf"
+#     IMPORT_INC_PATH "${SPEAKER_ASSETS_ANIMATIONS_DIR}"
+# )
 
 # Function to get component library
 function(get_component_library component_name output_var)
