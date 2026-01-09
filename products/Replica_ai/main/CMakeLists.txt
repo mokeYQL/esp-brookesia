@@ -1,12 +1,10 @@
-file(GLOB_RECURSE MAIN_SRCS "main.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/*.c")
-
+file(GLOB_RECURSE MAIN_SRCS ./*.cpp ./*.c)
 set(EMBEDDED_FILES "")
 
 idf_component_register(
     SRCS ${MAIN_SRCS}
-    INCLUDE_DIRS "." "assets/animations" "assets/images"
+    INCLUDE_DIRS "."
     EMBED_TXTFILES ${EMBEDDED_FILES}
-    REQUIRES esp_mmap_assets image_player lvgl
 )
 
 # Fix LVGL header include path for generated image C files

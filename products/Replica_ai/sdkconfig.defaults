@@ -192,9 +192,13 @@ CONFIG_LV_USE_QRCODE=y # 启用二维码生成功能
 
 CONFIG_ESP_LCD_TOUCH_CST816S_DISABLE_READ_ID=y # 禁用 CST816S 触摸控制器读取 ID（兼容性修复）
 
-CONFIG_BSP_I2C_NUM=0 # I2C 总线编号：0（使用第一个 I2C 控制器）
-CONFIG_BSP_LCD_DRAW_BUF_HEIGHT=15 # LCD 绘图缓冲区高度：15 行（平衡内存占用和渲染效率）
-CONFIG_BSP_LCD_DRAW_BUF_DOUBLE=y # LCD 双缓冲（避免屏幕撕裂，一帧显示时下一帧在后台渲染）
+# I2C 总线编号：0（使用第一个 I2C 控制器
+# LCD 绘图缓冲区高度：15 行（平衡内存占用和渲染效率
+# LCD 双缓冲（避免屏幕撕裂，一帧显示时下一帧在后台渲染
+
+CONFIG_BSP_I2C_NUM=0 
+CONFIG_BSP_LCD_DRAW_BUF_HEIGHT=15
+CONFIG_BSP_LCD_DRAW_BUF_DOUBLE=y
 
 
 # LVGL 官方 Demo 配置（需配合 CONFIG_LV_BUILD_EXAMPLES=y 使用）
