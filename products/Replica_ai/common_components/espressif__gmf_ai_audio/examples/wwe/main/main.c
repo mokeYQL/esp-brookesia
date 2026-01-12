@@ -4,44 +4,59 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "esp_err.h"
 #include "esp_log.h"
-#include "esp_check.h"
-#include "esp_vad.h"
+#include "soc/soc_caps.h"
 
 #include "esp_gmf_io.h"
 #include "esp_gmf_pipeline.h"
 #include "esp_gmf_pool.h"
-#include "esp_gmf_setup_peripheral.h"
-#include "esp_gmf_setup_pool.h"
+#include "esp_gmf_app_setup_peripheral.h"
 
-#include "esp_afe_config.h"
-#include "esp_gmf_afe_manager.h"
-#include "esp_gmf_afe.h"
-#include "cli.h"
+#include "esp_gmf_io_codec_dev.h"
+#include "esp_gmf_app_cli.h"
+#include "gmf_loader_setup_defaults.h"
 
-#define VOICE2FILE     (true)
+#if SOC_SDMMC_HOST_SUPPORTED == 1
+#define VOICE2FILE     (false)
+#endif  /* SOC_SDMMC_HOST_SUPPORTED == 1 */
+#ifdef CONFIG_GMF_AI_AUDIO_WAKEUP_ENABLE
 #define WAKENET_ENABLE (true)
+#else
+#define WAKENET_ENABLE (false)
+#endif /* CONFIG_GMF_AI_AUDIO_WAKEUP_ENABLE */
+#ifdef CONFIG_GMF_AI_AUDIO_VOICE_COMMAND_ENABLE
+#define VCMD_ENABLE (true)
+#else
+#define VCMD_ENABLE (false)
+#endif /* CONFIG_GMF_AI_AUDIO_VOICE_COMMAND_ENABLE */
 #define VAD_ENABLE     (true)
 #define QUIT_CMD_FOUND (BIT0)
 
 #define BOARD_LYRAT_MINI (0)
 #define BOARD_KORVO_2    (1)
+#define BOARD_XD_AIOT_C3 (2)
+#define BOARD_ESP_SPOT   (3)
 
 #if defined CONFIG_IDF_TARGET_ESP32S3
+#define WITH_AFE    (true)
 #define AUDIO_BOARD (BOARD_KORVO_2)
 #elif defined CONFIG_IDF_TARGET_ESP32
+#define WITH_AFE    (true)
 #define AUDIO_BOARD (BOARD_LYRAT_MINI)
+#elif defined CONFIG_IDF_TARGET_ESP32C3
+#define WITH_AFE    (false)
+#define AUDIO_BOARD (BOARD_XD_AIOT_C3)
+#elif defined CONFIG_IDF_TARGET_ESP32C5
+#define WITH_AFE    (false)
+#define AUDIO_BOARD (BOARD_ESP_SPOT)
 #endif  /* defined CONFIG_IDF_TARGET_ESP32S3 */
 
 #if AUDIO_BOARD == BOARD_KORVO_2
-#define AEC_ENABLE          (true)
-#define VCMD_ENABLE         (true)
-
-#define ADC_I2S_PORT        (0)
 #define ADC_I2S_CH          (2)
 #define ADC_I2S_BITS        (32)
 #define INPUT_CH_NUM        (4)
@@ -49,21 +64,37 @@
                                    2-channel mode to accommodate 16-bit, 4-channel data */
 #define INPUT_CH_ALLOCATION ("RMNM")
 #elif AUDIO_BOARD == BOARD_LYRAT_MINI
-#define AEC_ENABLE          (false)
-#define VCMD_ENABLE         (false)
-
-#define ADC_I2S_PORT        (1)
 #define ADC_I2S_CH          (2)
 #define ADC_I2S_BITS        (16)
 #define INPUT_CH_NUM        (ADC_I2S_CH)
 #define INPUT_CH_BITS       (ADC_I2S_BITS)
 #define INPUT_CH_ALLOCATION ("RM")
+#elif AUDIO_BOARD == BOARD_XD_AIOT_C3
+#define ADC_I2S_CH          (2)
+#define ADC_I2S_BITS        (16)
+#define INPUT_CH_NUM        (ADC_I2S_CH)
+#define INPUT_CH_BITS       (ADC_I2S_BITS)
+#define INPUT_CH_ALLOCATION ("MR")
+#elif AUDIO_BOARD == BOARD_ESP_SPOT
+#define ADC_I2S_CH          (2)
+#define ADC_I2S_BITS        (16)
+#define INPUT_CH_NUM        (ADC_I2S_CH)
+#define INPUT_CH_BITS       (ADC_I2S_BITS)
+#define INPUT_CH_ALLOCATION ("MR")
 #endif  /* AUDIO_BOARD == BOARD_KORVO_2 */
+
+#if WITH_AFE == true
+#include "esp_gmf_afe.h"
+#else
+#include "esp_gmf_wn.h"
+#endif  /* WITH_AFE == true */
 
 static const char *TAG = "AI_AUDIO_WWE";
 
-static bool               speeching     = false;
-static bool               wakeup        = false;
+#if WITH_AFE == true
+static bool speeching = false;
+static bool wakeup    = false;
+#endif  /* WITH_AFE == true */
 static EventGroupHandle_t g_event_group = NULL;
 
 static esp_err_t _pipeline_event(esp_gmf_event_pkt_t *event, void *ctx)
@@ -74,40 +105,41 @@ static esp_err_t _pipeline_event(esp_gmf_event_pkt_t *event, void *ctx)
     return 0;
 }
 
+#if WITH_AFE == true
 void esp_gmf_afe_event_cb(esp_gmf_obj_handle_t obj, esp_gmf_afe_evt_t *event, void *user_data)
 {
     switch (event->type) {
         case ESP_GMF_AFE_EVT_WAKEUP_START: {
             wakeup = true;
-#if WAKENET_ENABLE == true
+#if WAKENET_ENABLE == true && VCMD_ENABLE == true
             esp_gmf_afe_vcmd_detection_cancel(obj);
             esp_gmf_afe_vcmd_detection_begin(obj);
-#endif  /* WAKENET_ENABLE == true */
+#endif  /* WAKENET_ENABLE == true && VCMD_ENABLE == true */
             esp_gmf_afe_wakeup_info_t *info = event->event_data;
             ESP_LOGI(TAG, "WAKEUP_START [%d : %d]", info->wake_word_index, info->wakenet_model_index);
             break;
         }
         case ESP_GMF_AFE_EVT_WAKEUP_END: {
             wakeup = false;
-#if WAKENET_ENABLE == true
+#if WAKENET_ENABLE == true && VCMD_ENABLE == true
             esp_gmf_afe_vcmd_detection_cancel(obj);
-#endif  /* WAKENET_ENABLE == true */
+#endif  /* WAKENET_ENABLE == true && VCMD_ENABLE == true */
             ESP_LOGI(TAG, "WAKEUP_END");
             break;
         }
         case ESP_GMF_AFE_EVT_VAD_START: {
-#if WAKENET_ENABLE != true
+#if WAKENET_ENABLE != true && VCMD_ENABLE == true
             esp_gmf_afe_vcmd_detection_cancel(obj);
             esp_gmf_afe_vcmd_detection_begin(obj);
-#endif  /* WAKENET_ENABLE != true */
+#endif  /* WAKENET_ENABLE != true && VCMD_ENABLE == true */
             speeching = true;
             ESP_LOGI(TAG, "VAD_START");
             break;
         }
         case ESP_GMF_AFE_EVT_VAD_END: {
-#if WAKENET_ENABLE != true
+#if WAKENET_ENABLE != true && VCMD_ENABLE == true
             esp_gmf_afe_vcmd_detection_cancel(obj);
-#endif  /* WAKENET_ENABLE != true */
+#endif  /* WAKENET_ENABLE != true && VCMD_ENABLE == true */
             speeching = false;
             ESP_LOGI(TAG, "VAD_END");
             break;
@@ -128,10 +160,36 @@ void esp_gmf_afe_event_cb(esp_gmf_obj_handle_t obj, esp_gmf_afe_evt_t *event, vo
             if (event->type == 1) {
                 xEventGroupSetBits(g_event_group, QUIT_CMD_FOUND);
             }
+            /* Here use the third command to enable the `keep awake` mode of gmf_afe
+             * For Chinese model, the second default command is `ba xiao shi hou kai ji`
+             * For English model, the second default command is `sing a song`
+             * If user had modified the commands, please refer to the commands setting.
+             */
+            else if (event->type == 2) {
+                esp_gmf_afe_keep_awake(obj, true);
+            }
+            /* Here use the fourth command to disable the `keep awake` mode of gmf_afe
+             * For Chinese model, the third default command is `bi kai wo chui`
+             * For English model, the third default command is `play new channel`
+             * If user had modified the commands, please refer to the commands setting.
+             */
+            else if (event->type == 3) {
+                esp_gmf_afe_keep_awake(obj, false);
+            }
             break;
         }
     }
 }
+#else
+static void esp_gmf_wn_event_cb(esp_gmf_obj_handle_t obj, int32_t trigger_ch, void *user_ctx)
+{
+    static int32_t cnt = 1;
+    ESP_LOGI(TAG, "WWE detected on channel %" PRIi32 ", cnt: %" PRIi32, trigger_ch, cnt++);
+    if (cnt >= 10) {
+        xEventGroupSetBits(g_event_group, QUIT_CMD_FOUND);
+    }
+}
+#endif  /* WITH_AFE == true */
 
 static void voice_2_file(uint8_t *buffer, int len)
 {
@@ -164,76 +222,71 @@ static void voice_2_file(uint8_t *buffer, int len)
 #endif  /* VOICE2FILE == true */
 }
 
-static int outport_acquire_write(void *handle, esp_gmf_payload_t *load, int wanted_size, int block_ticks)
+static esp_gmf_err_io_t outport_acquire_write(void *handle, esp_gmf_payload_t *load, int wanted_size, int block_ticks)
 {
     ESP_LOGD(TAG, "Acquire write");
-    return wanted_size;
+    return ESP_GMF_IO_OK;
 }
 
-static int outport_release_write(void *handle, esp_gmf_payload_t *load, int block_ticks)
+static esp_gmf_err_io_t outport_release_write(void *handle, esp_gmf_payload_t *load, int block_ticks)
 {
     ESP_LOGD(TAG, "Release write");
     voice_2_file(load->buf, load->valid_size);
-    return load->valid_size;
+    return ESP_GMF_IO_OK;
 }
 
 void app_main(void)
 {
-    int ret = 0;
     esp_log_level_set("*", ESP_LOG_INFO);
-
-    void *card = NULL;
-    esp_gmf_setup_periph_sdmmc(&card);
-    esp_gmf_setup_periph_i2c(0);
-    esp_gmf_setup_periph_aud_info audio_info = {
-        .sample_rate = 16000,
-        .channel = ADC_I2S_CH,
-        .bits_per_sample = ADC_I2S_BITS,
-        .port_num = ADC_I2S_PORT,
-    };
-    void *record_dev = NULL;
-    ret = esp_gmf_setup_periph_codec(NULL, &audio_info, NULL, &record_dev);
-    ESP_GMF_RET_ON_NOT_OK(TAG, ret, { return;}, "Failed to setup audio codec");
+    esp_gmf_app_codec_info_t codec_info = ESP_GMF_APP_CODEC_INFO_DEFAULT();
+    codec_info.record_info.sample_rate = 16000;
+    codec_info.record_info.channel = ADC_I2S_CH;
+    codec_info.record_info.bits_per_sample = ADC_I2S_BITS;
+    codec_info.play_info.sample_rate = codec_info.record_info.sample_rate;
+    esp_gmf_app_setup_codec_dev(&codec_info);
+    void *sdcard_handle = NULL;
+    esp_gmf_app_setup_sdcard(&sdcard_handle);
     g_event_group = xEventGroupCreate();
 
     esp_gmf_pool_handle_t pool = NULL;
     esp_gmf_pool_init(&pool);
-    pool_register_io(pool);
-    pool_register_audio_codecs(pool);
-    pool_register_audio_effects(pool);
-    pool_register_codec_dev_io(pool, NULL, record_dev);
+    gmf_loader_setup_all_defaults(pool);
 
-    esp_gmf_afe_manager_handle_t afe_manager = NULL;
-    srmodel_list_t *models = esp_srmodel_init("model");
-    const char *ch_format = INPUT_CH_ALLOCATION;
-    afe_config_t *afe_cfg = afe_config_init(ch_format, models, AFE_TYPE_SR, AFE_MODE_HIGH_PERF);
-    afe_cfg->vad_init = VAD_ENABLE;
-    afe_cfg->vad_mode = VAD_MODE_3;
-    afe_cfg->vad_min_speech_ms = 64;
-    afe_cfg->vad_min_noise_ms = 1000;
-    afe_cfg->wakenet_init = WAKENET_ENABLE;
-    afe_cfg->aec_init = AEC_ENABLE;
-    esp_gmf_afe_manager_cfg_t afe_manager_cfg = DEFAULT_GMF_AFE_MANAGER_CFG(afe_cfg, NULL, NULL, NULL, NULL);
-    ESP_GOTO_ON_ERROR(esp_gmf_afe_manager_create(&afe_manager_cfg, &afe_manager), __quit, TAG, "AFE Manager Create failed");
-    esp_gmf_element_handle_t gmf_afe = NULL;
-    esp_gmf_afe_cfg_t gmf_afe_cfg = DEFAULT_GMF_AFE_CFG(afe_manager, esp_gmf_afe_event_cb, NULL, models);
-    gmf_afe_cfg.vcmd_detect_en = VCMD_ENABLE;
-    esp_gmf_afe_init(&gmf_afe_cfg, &gmf_afe);
-    esp_gmf_pool_register_element(pool, gmf_afe, NULL);
     esp_gmf_pipeline_handle_t pipe = NULL;
-    const char *name[] = {"gmf_afe"};
-    esp_gmf_pool_new_pipeline(pool, "codec_dev_rx", name, sizeof(name) / sizeof(char *), NULL, &pipe);
+#if WITH_AFE == true
+    const char *name[] = {"ai_afe"};
+#else
+    const char *name[] = {"ai_wn"};
+#endif  /* WITH_AFE == true */
+    esp_gmf_pool_new_pipeline(pool, "io_codec_dev", name, sizeof(name) / sizeof(char *), NULL, &pipe);
     if (pipe == NULL) {
         ESP_LOGE(TAG, "There is no pipeline");
         goto __quit;
     }
+    esp_gmf_io_codec_dev_set_dev(ESP_GMF_PIPELINE_GET_IN_INSTANCE(pipe), esp_gmf_app_get_record_handle());
+#if WITH_AFE == true
+    esp_gmf_element_handle_t afe = NULL;
+    esp_gmf_pipeline_get_el_by_name(pipe, "ai_afe", &afe);
+    esp_gmf_afe_set_event_cb(afe, esp_gmf_afe_event_cb, NULL);
+#else
+    esp_gmf_element_handle_t wn = NULL;
+    esp_gmf_pipeline_get_el_by_name(pipe, "ai_wn", &wn);
+    esp_gmf_wn_set_detect_cb(wn, esp_gmf_wn_event_cb, NULL);
+#endif  /* WITH_AFE == true */
     esp_gmf_port_handle_t outport = NEW_ESP_GMF_PORT_OUT_BYTE(outport_acquire_write,
                                                               outport_release_write,
                                                               NULL,
                                                               NULL,
                                                               2048,
                                                               100);
-    esp_gmf_pipeline_reg_el_port(pipe, "gmf_afe", ESP_GMF_IO_DIR_WRITER, outport);
+    esp_gmf_pipeline_reg_el_port(pipe, name[0], ESP_GMF_IO_DIR_WRITER, outport);
+
+    esp_gmf_info_sound_t info = {
+        .sample_rates = 16000,
+        .channels = INPUT_CH_NUM,
+        .bits = INPUT_CH_BITS,
+    };
+    esp_gmf_pipeline_report_info(pipe, ESP_GMF_INFO_SOUND, &info, sizeof(info));
 
     esp_gmf_task_cfg_t cfg = DEFAULT_ESP_GMF_TASK_CONFIG();
     cfg.ctx = NULL;
@@ -248,7 +301,7 @@ void app_main(void)
     esp_gmf_pipeline_set_event(pipe, _pipeline_event, NULL);
     esp_gmf_pipeline_run(pipe);
 
-    cli_init("Audio >");
+    esp_gmf_app_cli_init("Audio >", NULL);
 
     while (1) {
         EventBits_t bits = xEventGroupWaitBits(g_event_group, QUIT_CMD_FOUND, pdTRUE, pdFALSE, portMAX_DELAY);
@@ -262,13 +315,10 @@ __quit:
     esp_gmf_pipeline_stop(pipe);
     esp_gmf_task_deinit(task);
     esp_gmf_pipeline_destroy(pipe);
-    afe_config_free(afe_cfg);
-    esp_gmf_afe_manager_destroy(afe_manager);
-    pool_unregister_audio_codecs();
+    gmf_loader_teardown_all_defaults(pool);
     esp_gmf_pool_deinit(pool);
-    esp_gmf_teardown_periph_codec(NULL, record_dev);
-    esp_gmf_teardown_periph_i2c(0);
-    esp_gmf_teardown_periph_sdmmc(card);
+    esp_gmf_app_teardown_codec_dev();
+    esp_gmf_app_teardown_sdcard(sdcard_handle);
     vEventGroupDelete(g_event_group);
     ESP_LOGW(TAG, "Wake word engine demo finished");
 }

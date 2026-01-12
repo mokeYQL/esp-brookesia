@@ -52,5 +52,4 @@ function(apply_patch_for_component COMPONENT_NAME PATCH_NAME)
     endif()
 endfunction()
 
-apply_patch_for_component("espressif__gmf_core" "gmf_core.patch")
 apply_patch_for_component("espressif__esp_lvgl_port" "esp_lvgl_port.patch")
