@@ -27,20 +27,30 @@ CONFIG_COMPILER_OPTIMIZATION_PERF=y # 编译器优化级别：性能优先（-O2
 # ============================================
 # TLS/SSL 安全配置
 # ============================================
-#CONFIG_ESP_TLS_USE_DS_PERIPHERAL=n # 不使用 DS 数字签名外设（节省功耗和硬件资源）
-#CONFIG_ESP_TLS_INSECURE=y # 允许不安全的 TLS 连接（仅适用于开发/测试环境！）
-#CONFIG_ESP_TLS_SKIP_SERVER_CERT_VERIFY=y # 跳过服务器证书验证（开发调试用，生产环境必须禁用！）
+# 不使用 DS 数字签名外设（节省功耗和硬件资源）
+# 允许不安全的 TLS 连接（仅适用于开发/测试环境！）
+# 跳过服务器证书验证（开发调试用，生产环境必须禁用！）
+CONFIG_ESP_TLS_USE_DS_PERIPHERAL=n
+CONFIG_ESP_TLS_INSECURE=y
+CONFIG_ESP_TLS_SKIP_SERVER_CERT_VERIFY=y   
 
 # ============================================
 # PSRAM（外部 SPI RAM）配置 ⭐ 核心配置
 # ============================================
-CONFIG_SPIRAM=y # 启用外部 PSRAM：8MB Octal SPI RAM（扩展内存用于大块数据存储）
-CONFIG_SPIRAM_MODE_OCT=y # PSRAM 模式：八线模式（8位并行传输，提供最高带宽）
-CONFIG_SPIRAM_XIP_FROM_PSRAM=y # PSRAM 速度：80MHz（最高频率，代码可从 PSRAM 执行）
-CONFIG_SPIRAM_SPEED_80M=y # PSRAM 时钟频率：80MHz（最高性能模式）
-CONFIG_SPIRAM_MALLOC_ALWAYSINTERNAL=0 # malloc 分配策略：0 = 优先使用 PSRAM（适合大块内存分配）
-CONFIG_SPIRAM_TRY_ALLOCATE_WIFI_LWIP=y # WiFi 和 LWIP 协议栈缓冲区分配到 PSRAM（节省内部 SRAM）
-CONFIG_SPIRAM_ALLOW_BSS_SEG_EXTERNAL_MEMORY=y # 允许 BSS 段（未初始化全局变量）放在外部内存
+# 启用外部 PSRAM：8MB Octal SPI RAM（扩展内存用于大块数据存储）
+# PSRAM 模式：八线模式（8位并行传输，提供最高带宽）
+# PSRAM 速度：80MHz（最高频率，代码可从 PSRAM 执行）
+# PSRAM 时钟频率：80MHz（最高性能模式）
+# malloc 分配策略：0 = 优先使用 PSRAM（适合大块内存分配）
+# WiFi 和 LWIP 协议栈缓冲区分配到 PSRAM（节省内部 SRAM）
+# 允许 BSS 段（未初始化全局变量）放在外部内存
+CONFIG_SPIRAM=y                                 
+CONFIG_SPIRAM_MODE_OCT=y                        
+CONFIG_SPIRAM_XIP_FROM_PSRAM=y                  
+CONFIG_SPIRAM_SPEED_80M=y                       
+CONFIG_SPIRAM_MALLOC_ALWAYSINTERNAL=0           
+CONFIG_SPIRAM_TRY_ALLOCATE_WIFI_LWIP=y          
+CONFIG_SPIRAM_ALLOW_BSS_SEG_EXTERNAL_MEMORY=y   
 
 # ============================================
 # CPU 和性能配置
@@ -112,9 +122,12 @@ CONFIG_LWIP_DNS_SETSERVER_WITH_NETIF=y
 # ============================================
 # MbedTLS 加密库内存配置
 # ============================================
-#CONFIG_MBEDTLS_EXTERNAL_MEM_ALLOC=y # TLS 使用外部内存分配（大缓冲区放入 PSRAM，节省内部 RAM）
-#CONFIG_MBEDTLS_DYNAMIC_BUFFER=y # 启用动态缓冲区（按需扩展，减少静态内存占用）
-#CONFIG_MBEDTLS_SSL_KEEP_PEER_CERTIFICATE=n # 不保存对端证书（节省内存，生产环境应考虑启用）
+# TLS 使用外部内存分配（大缓冲区放入 PSRAM，节省内部 RAM）
+# 启用动态缓冲区（按需扩展，减少静态内存占用）
+# 不保存对端证书（节省内存，生产环境应考虑启用）
+CONFIG_MBEDTLS_EXTERNAL_MEM_ALLOC=y         
+CONFIG_MBEDTLS_DYNAMIC_BUFFER=y             
+CONFIG_MBEDTLS_SSL_KEEP_PEER_CERTIFICATE=n  
 
 # ============================================
 # Brookesia 系统配置（AI 框架）
