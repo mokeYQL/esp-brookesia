@@ -35,6 +35,8 @@ target_compile_options(${COMPONENT_LIB} PRIVATE "-DLV_LVGL_H_INCLUDE_SIMPLE")
 #     IMPORT_INC_PATH "${SPEAKER_ASSETS_ANIMATIONS_DIR}"
 # )
 
+spiffs_create_partition_image(spiffs_data ../spiffs FLASH_IN_PROJECT)
+
 # Function to get component library
 function(get_component_library component_name output_var)
     # Get the exact component name
