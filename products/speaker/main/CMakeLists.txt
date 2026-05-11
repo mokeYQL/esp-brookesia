@@ -14,7 +14,7 @@ idf_component_register(
 
 target_compile_options(${COMPONENT_LIB} PUBLIC -Wno-missing-field-initializers)
 
-spiffs_create_partition_image(spiffs_data ../spiffs FLASH_IN_PROJECT)
+# spiffs_create_partition_image(spiffs_data ../spiffs FLASH_IN_PROJECT)
 
 # Function to get component library
 function(get_component_library component_name output_var)

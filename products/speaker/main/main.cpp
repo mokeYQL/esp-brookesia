@@ -5,6 +5,7 @@
  */
 #include <cassert>
 #include "lvgl.h"
+#include "demos/benchmark/lv_demo_benchmark.h"
 #include "boost/thread.hpp"
 #ifdef ESP_UTILS_LOG_TAG
 #undef ESP_UTILS_LOG_TAG
@@ -12,30 +13,46 @@
 #define ESP_UTILS_LOG_TAG "Main"
 #include "esp_lib_utils.h"
 #include "modules/audio_sys.h"
+#include "bsp/echoear.h"
 #include "modules/display.hpp"
 #include "modules/services.hpp"
 #include "modules/audio.hpp"
 #include "modules/system.hpp"
-#include "modules/file_system.hpp"
-#include "modules/led_indicator.h"
+// #include "modules/file_system.hpp"
+// #include "modules/led_indicator.h"
 
 constexpr bool EXAMPLE_SHOW_MEM_INFO = true;
 
 extern "C" void app_main()
 {
-    restart_usb_serial_jtag();
+    // restart_usb_serial_jtag();
     printf("Project version: %s\n", CONFIG_APP_PROJECT_VER);
 
     assert(services_init() && "Initialize services failed");
     auto default_dummy_draw = !system_check_is_developer_mode();
-    assert(display_init(default_dummy_draw) && "Initialize display failed");
-    assert(led_indicator_init() && "Initialize led indicator failed");
-    if (!file_system_init())
-    {
-        ESP_UTILS_LOGE("Initialize file system failed, related features will be disabled");
-    }
-    assert(audio_init() && "Initialize audio failed");
-    assert(system_init() && "Initialize system failed");
+    assert(display_init(false) && "Initialize display failed");
+
+    // Run LVGL benchmark in a separate task to avoid blocking main
+    esp_utils::thread_config_guard bench_cfg({
+        .name = "benchmark",
+        .priority = 5,
+        .stack_size = 16 * 1024,
+    });
+    boost::thread([]()
+                  {
+        ESP_UTILS_LOGI("Benchmark task started");
+        bsp_display_lock(portMAX_DELAY);
+        lv_demo_benchmark();
+        bsp_display_unlock();
+        ESP_UTILS_LOGI("Benchmark finished"); })
+        .detach();
+    // assert(led_indicator_init() && "Initialize led indicator failed");
+    // if (!file_system_init())
+    // {
+    //     ESP_UTILS_LOGE("Initialize file system failed, related features will be disabled");
+    // }
+    // assert(audio_init() && "Initialize audio failed");
+    // assert(system_init() && "Initialize system failed");
 
     if constexpr (EXAMPLE_SHOW_MEM_INFO)
     {
